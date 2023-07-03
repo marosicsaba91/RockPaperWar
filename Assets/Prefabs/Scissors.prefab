@@ -134,7 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a8bce60b4e023147b401195e6ca9add, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hand: 0
+  hand: 2
   spriteRenderer: {fileID: 2676625393427217902}
   rigidbody2D: {fileID: 2676625393427217896}
 --- !u!50 &2676625393427217896

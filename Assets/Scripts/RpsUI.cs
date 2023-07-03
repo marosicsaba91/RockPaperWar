@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 public class RpsUI : MonoBehaviour
 {
@@ -10,16 +11,27 @@ public class RpsUI : MonoBehaviour
 
 	[SerializeField] TMP_Text speedText;
 	[SerializeField] Slider speedSlider;
+	[SerializeField] Button restartButton;
 
 	[SerializeField] RpsManager gameManager;
-	[SerializeField] RpsSpawner spawner;
 	[SerializeField] GameObject gameOverCanvas;
 	[SerializeField] TMP_Text ameOverText;
 
 	void OnValidate()
 	{
 		gameManager = FindObjectOfType<RpsManager>();
-		spawner = FindObjectOfType<RpsSpawner>();
+	}
+
+	void Awake()
+	{
+		restartButton.onClick.AddListener(Restart);
+		gameManager.OnGameOver += OnGameOver;
+	}
+
+	void Restart()
+	{
+		gameManager.StartGame();
+		gameOverCanvas.SetActive(false);
 	}
 
 	void Update()
@@ -32,22 +44,11 @@ public class RpsUI : MonoBehaviour
 		gameManager.speed = speed;
 		speedText.text = "Speed: " + speed.ToString("0.0");
 
-		bool isGameOver = true;
-		RpsHand hand = gameManager.Players[0].Hand;
-		for (int index = 1; index < gameManager.Players.Count; index++)
-		{
-			if (hand != gameManager.Players[index].Hand)
-			{
-				isGameOver = false;
-				break;
-			}
-		}
+	}
 
-		gameOverCanvas.SetActive(isGameOver);
-
-		if (isGameOver)
-		{
-			ameOverText.text = hand + " Wins!";
-		}
+	void OnGameOver(RpsHand hand)
+	{
+		gameOverCanvas.SetActive(true);
+		ameOverText.text = hand + " Wins!";
 	}
 }

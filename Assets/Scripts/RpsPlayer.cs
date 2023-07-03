@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 public class RpsPlayer : MonoBehaviour
 {
-	[SerializeField] RpsHand hand;                      // Kő / Papír / Olló
+	[SerializeField] RpsHand hand;     // Kő / Papír / Olló
 
 	// Referenciák saját komponensekre:
 	[SerializeField] SpriteRenderer spriteRenderer;
@@ -25,24 +25,17 @@ public class RpsPlayer : MonoBehaviour
 		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 
-	public RpsHand Hand      // Property, a játékos tpusár
+	public RpsHand Hand      // Property, a játékos típusár
 	{
 		get => hand;
 		set
 		{
+			if (value == hand) return;
+
 			spriteRenderer.sprite = _manager.GetSprite(value);
 			hand = value;
+			_manager.TestGameEnd();
 		}
-	}
-
-	void OnEnable()      // Regisztráljuk magunk a Manager-be
-	{
-		_manager.Players.Add(this);
-	}
-
-	void OnDisable()    // Ki regisztráljuk magunk a Manager-ből
-	{
-		_manager.Players.Remove(this);
 	}
 
 	void Update()
@@ -64,21 +57,9 @@ public class RpsPlayer : MonoBehaviour
 		}
 	}
 
-	enum DayInAWeek { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday }
-	DayInAWeek NextDay(DayInAWeek day)
-	{
-		int dayIndex = (int)day;
-		dayIndex++;
-		dayIndex %= 7;
-		return (DayInAWeek)dayIndex;
-	}
-
 	// Visszaadja a haladás irányát
 	Vector2 GetWeightedDirection()
 	{
-		NavigationMoveEvent.Direction d = NavigationMoveEvent.Direction.None;
-		int dd = (int)d;
-
 		Vector2 weightedDirection = Vector3.zero;
 		Vector2 position = transform.position;
 		foreach (RpsPlayer player in _manager.Players)
@@ -111,10 +92,10 @@ public class RpsPlayer : MonoBehaviour
 
 	void HandleCollision(Collision2D other)
 	{
-		RpsPlayer otherPlayer = other.gameObject.GetComponent<RpsPlayer>();
-		if (otherPlayer == null)
+		if (!other.gameObject.TryGetComponent<RpsPlayer>(out RpsPlayer otherPlayer))
 			return;
-		// Ha egy másik playerrel találkoztunk:
+
+		// Ha egy másik player-rel találkoztunk:
 
 		if (_manager.PlayRps(hand, otherPlayer.hand) > 0)  // Ha legyőztük a másikat,
 			otherPlayer.Hand = hand;  //akkor átváltoztatjuk a típusát a sajátunkra
