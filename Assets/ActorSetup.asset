@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c668ca4a6fe8e43817f9b1891e21ab, type: 3}
+  m_Name: ActorSetup
+  m_EditorClassIdentifier: 
+  maxSpeed1: 1
+  maxSpeed2: 4
+  maxActorAcceleration: 20
+  angularSpeed: 1000
+  predatorEffectMaxDistance: 7
+  predatorMaxEffect: -30
+  prayEffectMaxDistance: 7
+  prayMaxEffect: 30
+  neutralEffectMaxDistance: 3
+  neutralMaxEffect: -10

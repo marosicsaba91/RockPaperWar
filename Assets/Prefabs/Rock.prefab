@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7285484922921066982}
   - component: {fileID: 7285484922921066981}
   - component: {fileID: 7285484922921066976}
+  - component: {fileID: -5264464483954457117}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -48,8 +49,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hand: 0
+  setup: {fileID: 11400000, guid: c95467df4e20dbf4b944f6716976a11a, type: 2}
   spriteRenderer: {fileID: 7285484922921066982}
   rigidbody2D: {fileID: 7285484922921066976}
+  animator: {fileID: -5264464483954457117}
 --- !u!212 &7285484922921066982
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -164,3 +167,24 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!95 &-5264464483954457117
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7285484922921066987}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3fc111a747ec8ab46aa4c77646e40b9a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

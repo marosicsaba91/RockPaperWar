@@ -5,12 +5,11 @@ using Random = UnityEngine.Random;
 
 public class RpsManager : MonoBehaviour
 {
-	// Játékosok létrehozása
-	[SerializeField] Rect spawnArea;
+	// Játékosok létrehozása 
 	[SerializeField] GameObject rockPrefab;
 	[SerializeField] GameObject paperPrefab;
 	[SerializeField] GameObject scissorsPrefab;
-	[SerializeField] int spawnCount = 10;
+	[SerializeField] Stage stage;
 	 
 	// Sprite-ok
 	[Space]
@@ -18,27 +17,53 @@ public class RpsManager : MonoBehaviour
 	[SerializeField] Sprite paper;
 	[SerializeField] Sprite scissors;
 
-	// Játékosok sebessége
+	// StartSetup
 	[Space]
-	public float speed = 1f;
+	public int startSpawnCount = 10;
+	public float spawnTime = 10f;
 
 	// Események
 	public event Action OnGameStart;
 	public event Action<RpsHand> OnGameOver;
 
 	// Játékosokat tároljuk itt:
-	public List<RpsPlayer> players = new();
+	public List<RpsActor> players = new();
 
 	// Ezt a property-t csak olvasni lehet:
-	public IReadOnlyList<RpsPlayer> Players => players;
+	public IReadOnlyList<RpsActor> Players => players;
+
+	// public float TimeScale { get; internal set; } = 1f;
+	public bool IsGameOn { get; set; } = false;
 
 	void Start()
 	{
 		StartGame();
 	}
 
+	float _time = 0;
+	void Update()
+	{
+		if (!IsGameOn) return;
+		_time += Time.deltaTime; // * TimeScale;
+
+		if(_time>= spawnTime)
+		{
+			_time -= spawnTime;
+
+			int randomIndex = Random.Range(0, 3);
+			GameObject prefab =
+				randomIndex == 0 ? rockPrefab :
+				randomIndex == 1 ? paperPrefab :
+				scissorsPrefab;
+
+			Spawn(prefab, stage.StageRect);
+		}
+	}
+
 	public void StartGame() 
 	{
+		IsGameOn = true;
+		_time = 0;
 		ClearPlayers();
 		SpawnPlayers();
 		OnGameStart?.Invoke();
@@ -49,7 +74,7 @@ public class RpsManager : MonoBehaviour
 	{
 		for (int index = players.Count - 1; index >= 0; index--)
 		{
-			RpsPlayer player = players[index];
+			RpsActor player = players[index];
 			Destroy(player.gameObject);
 		}
 		players.Clear();
@@ -58,30 +83,30 @@ public class RpsManager : MonoBehaviour
 	// Játékosok létrehozása:
 	void SpawnPlayers()
 	{
-		for (int i = 0; i < spawnCount; i++)
+		Rect stage = this.stage.StageRect;
+		for (int i = 0; i < startSpawnCount; i++)
 		{
-			Spawn(rockPrefab);
-			Spawn(paperPrefab);
-			Spawn(scissorsPrefab);
+			Spawn(rockPrefab, stage);
+			Spawn(paperPrefab, stage);
+			Spawn(scissorsPrefab, stage);
 		}
 	}
 
-	void Spawn(GameObject prefab)
-	{
+	void Spawn(GameObject prefab, Rect stage)
+	{ 
 		Vector3 position = new(
-			Random.Range(spawnArea.xMin, spawnArea.xMax),
-			Random.Range(spawnArea.yMin, spawnArea.yMax),
-			0f
+			Random.Range(stage.xMin, stage.xMax),
+			Random.Range(stage.yMin, stage.yMax)
 		);
 		GameObject player = Instantiate(prefab, position, Quaternion.identity);
 		player.transform.SetParent(transform);
-		players.Add(player.GetComponent<RpsPlayer>());
+		players.Add(player.GetComponent<RpsActor>());
 	}
 
 	public int CountElement(RpsHand hand)       // Megszámolja, egy fajtából mennyi van.
 	{
 		int count = 0;
-		foreach (RpsPlayer player in players)
+		foreach (RpsActor player in players)
 		{
 			if (player.Hand == hand)
 				count++;
@@ -89,24 +114,23 @@ public class RpsManager : MonoBehaviour
 		return count;
 	}
 
-	// Lejátszása a játékot két játékos között és egy int-et ad vissza,
-	// ami azt jelzi, hogy ki nyert:
-	public int PlayRps(RpsHand myHandType, RpsHand otherHandType)
+	// Mi a másik player viszonya hozzánk képest? Ragadozó, préda vagy semleges?
+	public static RpsRelation GetRelation(RpsHand myHandType, RpsHand otherHandType)
 	{
 		// Döntetlen
 		if (myHandType == otherHandType)
-			return 0;
+			return RpsRelation.Neutral;
 
 		// Nyertünk / Üldözzük
 		if (myHandType == RpsHand.Rock && otherHandType == RpsHand.Scissors)
-			return 1;
+			return RpsRelation.Pray;
 		if (myHandType == RpsHand.Paper && otherHandType == RpsHand.Rock)
-			return 1;
+			return RpsRelation.Pray;
 		if (myHandType == RpsHand.Scissors && otherHandType == RpsHand.Paper)
-			return 1;
+			return RpsRelation.Pray;
 
 		// Veszítettünk / Menekülünk
-		return -1;
+		return RpsRelation.Predator;
 	}
 
 	// Sprite lekérése a típus alapján:
@@ -134,7 +158,10 @@ public class RpsManager : MonoBehaviour
 			}
 		}
 
-		if(isGameOver)
+		if (isGameOver)
+		{
 			OnGameOver?.Invoke(hand);
+			IsGameOn = false;
+		}
 	}
 }

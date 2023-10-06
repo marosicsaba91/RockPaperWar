@@ -4,3 +4,10 @@
 	Paper,     // Papír
 	Scissors   // Olló
 }
+
+public enum RpsRelation 
+{
+	Predator,
+	Pray,
+	Neutral
+}
