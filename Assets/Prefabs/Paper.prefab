@@ -53,7 +53,6 @@ MonoBehaviour:
   spriteRenderer: {fileID: 5836004008817304675}
   rigidbody2D: {fileID: 5836004008817304673}
   animator: {fileID: 1101402992430969325}
-  testMode: 0
 --- !u!212 &5836004008817304675
 SpriteRenderer:
   m_ObjectHideFlags: 0

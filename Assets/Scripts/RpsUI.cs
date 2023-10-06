@@ -41,7 +41,6 @@ public class RpsUI : MonoBehaviour
 		continueButton.onClick.AddListener(Pause);
 		fullScreenButton.onClick.AddListener(FullScreen);
 		gameManager.OnGameOver += OnGameOver;
-		_defaultMode = Screen.fullScreenMode;
 		pausePanel.SetActive(false);
 	}
 
@@ -54,9 +53,16 @@ public class RpsUI : MonoBehaviour
 
 	void FullScreen() 
 	{
-		Screen.fullScreenMode = 
-			Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen 
-			? _defaultMode : FullScreenMode.ExclusiveFullScreen;
+
+		if (_defaultMode == FullScreenMode.ExclusiveFullScreen)
+		{
+			Screen.fullScreenMode = _defaultMode;
+		}
+		else
+		{
+			_defaultMode = Screen.fullScreenMode;
+			Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+		}
 	}
 
 	void Restart()

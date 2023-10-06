@@ -29,7 +29,7 @@ public class Stage : MonoBehaviour
 
 	Vector2Int lastResolution;
 
-	void Start()
+	void Awake()
 	{
 		UpdateWalls();
 	}
