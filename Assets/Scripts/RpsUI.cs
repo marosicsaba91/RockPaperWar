@@ -51,17 +51,21 @@ public class RpsUI : MonoBehaviour
 		gameManager.IsGameOn = !gameManager.IsGameOn; 
 	}
 
+
+	Resolution windowedResolution = new() { width = 1080, height = 720 };
 	void FullScreen() 
 	{
-
-		if (_defaultMode == FullScreenMode.ExclusiveFullScreen)
+		if (Screen.fullScreen)
 		{
-			Screen.fullScreenMode = _defaultMode;
+			// TO WINDOWED
+			Screen.SetResolution(windowedResolution.width, windowedResolution.height, false);
 		}
 		else
 		{
-			_defaultMode = Screen.fullScreenMode;
-			Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+			// TO FULLSCREEN
+			windowedResolution = Screen.resolutions[0];
+			Resolution fullScreenResolution = Screen.currentResolution;
+			Screen.SetResolution(fullScreenResolution.width, fullScreenResolution.height, true);
 		}
 	}
 
